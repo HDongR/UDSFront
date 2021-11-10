@@ -21,7 +21,7 @@ var loadTerrain = async function () {
     let endLon = preloadData.endpoint.split(',')[0];
     let endLat = preloadData.endpoint.split(',')[1];
 
-    let zResol = 80;
+    let zResol = 1;
     var coordMin = { x: Number(startLon), y: Number(startLat) };
     var coordMax = { x: Number(endLon), y: Number(endLat) };
     //var coordMin = new maptalks.Coordinate(129.148876, 35.151681);
@@ -86,7 +86,7 @@ var loadTerrain = async function () {
               for (var i = 0, l = geometry.attributes.position.count; i < l; i++) {
                   const z = pdata[i][2]/zResol;//.threeLayer.distanceToVector3(pdata[i][2], pdata[i][2]).x;
                   const v = cvt3([pdata[i][0],pdata[i][1]], z);
-                  geometry.attributes.position.setXYZ(i, v.x, v.y, v.z);
+                  geometry.attributes.position.setXYZ(i, v.x, v.z, v.y);
               }
             
               var material = new THREE.MeshBasicMaterial({/*color: 'hsl(0,100%,50%)',*/});
@@ -98,14 +98,14 @@ var loadTerrain = async function () {
               loader.load( address, function ( imageBitmap ) {
                 var tx = new THREE.CanvasTexture( imageBitmap );
                 material.map = tx;
+                material.side = THREE.DoubleSide;
                 material.visible = true;
                 material.needsUpdate = true;
               });
               
             
               
-              var plane = new THREE.Mesh(geometry, material);   
-              plane.rotation.x = - Math.PI / 2;
+              var plane = new THREE.Mesh(geometry, material);
               material.visible = false;
               
               addScene(plane);

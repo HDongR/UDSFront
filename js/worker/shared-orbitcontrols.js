@@ -14,64 +14,68 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
   const renderer = new THREE.WebGLRenderer({canvas});
 
   const scene = new THREE.Scene();
+  scene.background = new THREE.Color( 0xcccccc );
+  scene.fog = new THREE.FogExp2( 0xcccccc, 0.00002 );
+  globalScene = scene;
 
   const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
-  mesh.rotation.x = - Math.PI / 2;
-
   let centerPos = cvt3([mapConfig.center[0], mapConfig.center[1]], 0);
   centerPos = [centerPos.x, centerPos.y, centerPos.z];
-  mesh.position.set(centerPos[0], centerPos[1], 0);
-
-  const axesHelper = new THREE.AxesHelper( 5 );
-  scene.add( axesHelper );
+  mesh.position.set(centerPos[0], 0, centerPos[1]);
+  mesh.rotation.x = - Math.PI / 2;
   scene.add( mesh );
+
+
+
+  const axesHelper = new THREE.AxesHelper( 50000 );
+  axesHelper.position.set(centerPos[0], 0, centerPos[1]);
+  scene.add( axesHelper );
+  
 
   const grid = new THREE.GridHelper( 200, 40, 0x000000, 0x000000 );
   grid.material.opacity = 0.2;
   grid.material.transparent = true;
   scene.add( grid );
    
-  grid.position.set(centerPos[0], centerPos[1], 0);
+  grid.position.set(centerPos[0], 0, centerPos[1]);
 
 
 
   const fov = 75;
   const aspect = 2; // the canvas default
   const near = 0.1;
-  const far = 5000;
+  const far = 500000;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  const helper = new THREE.CameraHelper( camera );
-  camera.position.z = 40;
-  camera.position.set(centerPos[0], centerPos[1], 40);
-
   globalCamera = camera;
+  camera.position.set(centerPos[0], 2000, centerPos[1] + 100 );
 
-  scene.background = new THREE.Color( 0xcccccc );
-  scene.fog = new THREE.FogExp2( 0xcccccc, 0.002 );
+  const helper = new THREE.CameraHelper( camera );
+  scene.add( helper );
+  
+
+  
+
+
 
   const controls = new OrbitControls(camera, inputElement);
-
-  controls.target.set(centerPos[0], centerPos[1], 20);
-
+  controls.target.set(centerPos[0], 2, centerPos[1]);
   controls.update();
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
     MIDDLE: THREE.MOUSE.DOLLY,
     RIGHT: THREE.MOUSE.ROTATE
   }
-
   controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-  controls.dampingFactor = 0.05;
-
+  //controls.dampingFactor = 0.05;
+  controls.enablePan = true;
   controls.screenSpacePanning = false;
-
-  // controls.minDistance = 100;
-  // controls.maxDistance = 500;
-
-  controls.maxPolarAngle = Math.PI / 3;
+  controls.panSpeed = 1;
+  //controls.minDistance = 1;
+  //controls.maxDistance = 500;
+  controls.maxPolarAngle = Math.PI / 2;
   
-  globalScene = scene;
-  scene.add( helper );
+   
+  
   //helper.position.set(centerPos[0], centerPos[1], 0);
   {
     const color = 0xFFFFFF;
@@ -95,15 +99,16 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     scene.add(cube);
     cube.position.x = x;
     cube.position.x = centerPos[0] + x;
-    cube.position.y = centerPos[1];
+    cube.position.z = centerPos[1] + x;
+    cube.position.y = x;
 
     return cube;
   }
 
   const cubes = [
-    makeInstance(geometry, 0x44aa88, 0),
-    makeInstance(geometry, 0x8844aa, -2),
-    makeInstance(geometry, 0xaa8844, 2),
+    makeInstance(geometry, 0xff0000, -2),
+    makeInstance(geometry, 0x00ff00, 0),
+    makeInstance(geometry, 0x0000ff, 2),
   ];
 
   class PickHelper {
@@ -167,6 +172,14 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     //pickHelper.pick(pickPosition, scene, camera, time);
 
     renderer.render(scene, camera);
+    //console.log(controls);
+    //camera.rotation.x =  Math.PI / 2;
+    // camera.projectionMatrix.elements = [
+    //   1.5,0,0,0,
+    //   0,3,0,0,
+    //   0,0,-1,-1,
+    //   0, 0, -350,1];
+    //camera.projectionMatrixInverse.copy(renderer.matrix4).invert();
 
     requestAnimationFrame(render);
   }
