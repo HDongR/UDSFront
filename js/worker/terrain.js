@@ -6,16 +6,13 @@ import {cvt3} from '/js/util/geoutil.js';
 
 var loader = new THREE.ImageBitmapLoader();
 
-
 export function _createTerrain() {
     loadTerrain();
-
 }
 
-
 var loadTerrain = async function () {
-
-    let preloadData = { tile_zoom: 10, startpoint: "128.755734,34.978977", endpoint: "129.314373,35.396265" };
+    //let preloadData = { tile_zoom: 15, startpoint: "129.149205,35.151244", endpoint: "129.157228,35.159228" }; //동백섬
+    let preloadData = { tile_zoom: 10, startpoint: "128.755734,34.978977", endpoint: "129.314373,35.396265" }; //부산시
     let startLon = preloadData.startpoint.split(',')[0];
     let startLat = preloadData.startpoint.split(',')[1];
     let endLon = preloadData.endpoint.split(',')[0];
@@ -67,6 +64,7 @@ var loadTerrain = async function () {
               let pdata = [];
               let sData = null;
               let eData = null;
+              let center = [];
               for(var yy=64; yy>=0; yy--){ 
                 for(var xx=0; xx<65; xx++){
                   let xDegree = x+(unit/64)*xx;
@@ -78,15 +76,18 @@ var loadTerrain = async function () {
                     eData = [xDegree, yDegree];
                   }else if(yy == 64 && xx == 0){
                     sData = [xDegree, yDegree];
+                  }else if(yy == 32 && xx == 32){
+                    center = [xDegree, yDegree];
                   }
                 }
               }
               var geometry = new THREE.PlaneGeometry(1, 1, 64, 64);
               
+              let centerConv = cvt3(center, 0);
               for (var i = 0, l = geometry.attributes.position.count; i < l; i++) {
                   const z = pdata[i][2]/zResol;//.threeLayer.distanceToVector3(pdata[i][2], pdata[i][2]).x;
                   const v = cvt3([pdata[i][0],pdata[i][1]], z);
-                  geometry.attributes.position.setXYZ(i, v.x, v.z, v.y);
+                  geometry.attributes.position.setXYZ(i, v.x - centerConv.x, v.z, v.y - centerConv.y);
               }
             
               var material = new THREE.MeshBasicMaterial({/*color: 'hsl(0,100%,50%)',*/});
@@ -106,6 +107,7 @@ var loadTerrain = async function () {
             
               
               var plane = new THREE.Mesh(geometry, material);
+              plane.position.set(centerConv.x, 0, centerConv.y);
               material.visible = false;
               
               addScene(plane);
