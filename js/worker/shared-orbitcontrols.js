@@ -8,8 +8,13 @@ let globalCamera;
 export function addScene(obj){
   globalScene.add(obj);  
 }
-
+function test(){
+    
+  let val = 0.5;
+  console.log(new Array(53).fill(0).map(() => (val *= 2)));
+}
 export function init(data) {   /* eslint-disable-line no-unused-vars */
+  test();
   const {canvas, inputElement, mapConfig} = data;
   const renderer = new THREE.WebGLRenderer({canvas});
 
@@ -180,7 +185,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     //   0,0,-1,-1,
     //   0, 0, -350,1];
     //camera.projectionMatrixInverse.copy(renderer.matrix4).invert();
-
+    //console.log(camera.aspect, camera.far, camera.fov, camera.matrix, camera.matrixWorld, camera.matrixWorldInverse, camera.near, camera.position, camera.projectionMatrix, camera.projectionMatrixInverse, camera.quaternion, camera.rotation);
     requestAnimationFrame(render);
   }
 

@@ -41,3 +41,4 @@ function prjToPoint(coord){
     var y = matrix[1] * (coord.y - matrix[3]) / scale;
     return {x, y};
 }
+ 
