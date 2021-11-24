@@ -63,7 +63,19 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
 
 
   const controls = new OrbitControls(camera, inputElement);
-  controls.target.set(centerPos[0], 2, centerPos[1]);
+
+  controls.addEventListener('change', (a,b,c,d,e,f,g)=>{
+    console.log('change', e);
+  });
+  controls.addEventListener('start', (a,b,c,d,e,f,g)=>{
+    console.log('start', e);
+  });
+  controls.addEventListener('end', (a,b,c,d,e,f,g)=>{
+    console.log('end', e);
+  });
+
+  controls.zoomSpeed = 5.0;
+  controls.target.set(centerPos[0], 0, centerPos[1]);
   controls.update();
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
