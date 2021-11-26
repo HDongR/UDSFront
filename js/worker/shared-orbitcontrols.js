@@ -1,6 +1,6 @@
 import * as THREE from '/js/three/build/three.module.js';
 import {OrbitControls} from '/js/three/examples/jsm/controls/OrbitControls.js';
-import {cvt3} from '/js/util/geoutil.js';
+import {cvt3, calcMatrix} from '/js/util/geoutil.js';
 
 let globalScene;
 let globalCamera;
@@ -8,7 +8,7 @@ let globalCamera;
 export function addScene(obj){
   globalScene.add(obj);  
 }
-function test(){
+function test(){ 
     
   let val = 0.5;
   console.log(new Array(53).fill(0).map(() => (val *= 2)));
@@ -16,6 +16,7 @@ function test(){
 export function init(data) {   /* eslint-disable-line no-unused-vars */
   test();
   const {canvas, inputElement, mapConfig} = data;
+  console.log(data);
   const renderer = new THREE.WebGLRenderer({canvas});
 
   const scene = new THREE.Scene();
@@ -63,19 +64,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
 
 
   const controls = new OrbitControls(camera, inputElement);
-
-  controls.addEventListener('change', (a,b,c,d,e,f,g)=>{
-    console.log('change', e);
-  });
-  controls.addEventListener('start', (a,b,c,d,e,f,g)=>{
-    console.log('start', e);
-  });
-  controls.addEventListener('end', (a,b,c,d,e,f,g)=>{
-    console.log('end', e);
-  });
-
-  controls.zoomSpeed = 5.0;
-  controls.target.set(centerPos[0], 0, centerPos[1]);
+  controls.target.set(centerPos[0], 2, centerPos[1]);
   controls.update();
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
@@ -204,8 +193,9 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     // console.log('camera projectionInverse m', camera.projectionMatrixInverse);
     // console.log('camera matrixWorld m', camera.matrixWorld);
     // console.log('camera matrixWorldInverse m', camera.matrixWorldInverse);
-    console.log(controls);
+    //console.log(controls);
     
+    calcMatrix();
     requestAnimationFrame(render);
   }
 

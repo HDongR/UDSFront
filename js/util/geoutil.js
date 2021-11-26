@@ -42,3 +42,7 @@ function prjToPoint(coord){
     return {x, y};
 }
  
+export function calcMatrix(){
+    console.log('z');
+
+}

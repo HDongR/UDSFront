@@ -145,6 +145,7 @@ function startWorker(canvas) {
     canvas: offscreen,
     canvasId: proxy.id,
     mapConfig: {
+      devicePixelRatio: window.devicePixelRatio,
       zoom:10,
       maxZoom:19,
       minZoom:9,
