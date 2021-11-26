@@ -186,6 +186,14 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     //   0, 0, -350,1];
     //camera.projectionMatrixInverse.copy(renderer.matrix4).invert();
     //console.log(camera.aspect, camera.far, camera.fov, camera.matrix, camera.matrixWorld, camera.matrixWorldInverse, camera.near, camera.position, camera.projectionMatrix, camera.projectionMatrixInverse, camera.quaternion, camera.rotation);
+    
+    // console.log('camera matrix m', camera.matrix);
+    // console.log('camera projection m', camera.projectionMatrix);
+    // console.log('camera projectionInverse m', camera.projectionMatrixInverse);
+    // console.log('camera matrixWorld m', camera.matrixWorld);
+    // console.log('camera matrixWorldInverse m', camera.matrixWorldInverse);
+    console.log(controls);
+    
     requestAnimationFrame(render);
   }
 
