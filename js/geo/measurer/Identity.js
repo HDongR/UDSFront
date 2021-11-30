@@ -1,7 +1,7 @@
-import { extend } from '../../core/util';
-import Coordinate from '../Coordinate';
-import Point from '../Point';
-import Common from './Common';
+import { extend } from '../../core/util/index.js';
+import Coordinate from '../Coordinate.js';
+import Point from '../Point.js';
+import Common from './Common.js';
 /**
  * Identity measurer, a measurer for Cartesian coordinate system.
  *

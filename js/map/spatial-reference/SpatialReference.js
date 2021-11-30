@@ -1,9 +1,9 @@
-import { extend, isNil, isObject, hasOwn, sign, isString } from '../../core/util';
-import Coordinate from '../../geo/Coordinate';
-import Extent from '../../geo/Extent';
-import * as projections from '../../geo/projection';
-import Transformation from '../../geo/transformation/Transformation';
-import { Measurer } from '../../geo/measurer';
+import { extend, isNil, isObject, hasOwn, sign, isString } from '../../core/util/index.js';
+import Coordinate from '../../geo/Coordinate.js';
+import Extent from '../../geo/Extent.js';
+import * as projections from '../../geo/projection/Projection.EPSG3857.js';
+import Transformation from '../../geo/transformation/Transformation.js';
+
 const MAX_ZOOM = 23;
 
 const DefaultSpatialReference = {
@@ -39,42 +39,6 @@ const DefaultSpatialReference = {
             }
             return resolutions;
         })()
-    },
-    'BAIDU': {
-        'projection': 'baidu',
-        'resolutions': (function () {
-            let res = Math.pow(2, 18);
-            const resolutions = [];
-            for (let i = 0; i < MAX_ZOOM; i++) {
-                resolutions[i] = res;
-                res *= 0.5;
-            }
-            return resolutions;
-        })(),
-        'fullExtent': {
-            'top': 33554432,
-            'left': -33554432,
-            'bottom': -33554432,
-            'right': 33554432
-        }
-    },
-    'IDENTITY': {
-        'projection': 'identity',
-        'resolutions': (function () {
-            let res = Math.pow(2, 8);
-            const resolutions = [];
-            for (let i = 0; i < MAX_ZOOM; i++) {
-                resolutions[i] = res;
-                res *= 0.5;
-            }
-            return resolutions;
-        })(),
-        'fullExtent': {
-            'top': 200000,
-            'left': -200000,
-            'bottom': -200000,
-            'right': 200000
-        }
     },
 
     // TileSystem: [1, -1, -6378137 * Math.PI, 6378137 * Math.PI]
@@ -171,33 +135,14 @@ export default class SpatialReference {
 
     _initSpatialRef() {
         let projection = this.options['projection'];
-        if (projection) {
-            projection = SpatialReference.getProjectionInstance(projection);
-        } else {
-            projection = projections.DEFAULT;
-        }
-        if (!projection) {
-            throw new Error('must provide a valid projection in map\'s spatial reference.');
-        }
-        projection = extend({}, projections.Common, projection);
-        if (!projection.measureLength) {
-            extend(projection, Measurer.DEFAULT);
-        }
         this._projection = projection;
-        let defaultSpatialRef,
-            resolutions = this.options['resolutions'];
-        if (!resolutions) {
-            if (projection['code']) {
-                defaultSpatialRef = DefaultSpatialReference[projection['code'].toUpperCase()];
-                if (defaultSpatialRef) {
-                    resolutions = defaultSpatialRef['resolutions'];
-                    this.isEPSG = projection['code'] !== 'IDENTITY';
-                }
-            }
-            if (!resolutions) {
-                throw new Error('must provide valid resolutions in map\'s spatial reference.');
-            }
+        let defaultSpatialRef = DefaultSpatialReference[projection['code'].toUpperCase()];
+        let resolutions = {};
+        if (defaultSpatialRef) {
+            resolutions = defaultSpatialRef['resolutions'];
+            this.isEPSG = projection['code'] !== 'IDENTITY';
         }
+             
         this._resolutions = resolutions;
         this._pyramid = true;
         if (this._pyramid) {

@@ -1,5 +1,5 @@
-import Point from './Point';
-import { isNumber } from '../core/util/common';
+import Point from './Point.js';
+import { isNumber } from '../core/util/common.js';
 
 /**
  * Represents a size.

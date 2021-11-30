@@ -1,5 +1,5 @@
-import Coordinate from '../Coordinate';
-import Point from '../Point';
+import Coordinate from '../Coordinate.js';
+import Point from '../Point.js';
 
 /**
  * Transformation between projected coordinates and base 2d point system.

@@ -1,21 +1,33 @@
 import * as THREE from '/js/three/build/three.module.js';
 import {OrbitControls} from '/js/three/examples/jsm/controls/OrbitControls.js';
 import {cvt3, calcMatrix} from '/js/util/geoutil.js';
+import SpatialReference from '/js/map/spatial-reference/SpatialReference.js';
+import Projection from '/js/geo/projection/Projection.EPSG3857.js';
 
 let globalScene;
 let globalCamera;
+export let map = {};
 
 export function addScene(obj){
   globalScene.add(obj);  
 }
-function test(){ 
-    
-  let val = 0.5;
-  console.log(new Array(53).fill(0).map(() => (val *= 2)));
+
+function config(mapConfig){
+  let projection = new Projection();
+  let spatialReference = new SpatialReference({projection});
+  map.spatialReference = spatialReference;
+  console.log(spatialReference);
+  map.zoom = mapConfig.zoom;
+  map.maxZoom = mapConfig.maxZoom;
+  map.minZoom = mapConfig.minZoom;
+  
+  
 }
+
 export function init(data) {   /* eslint-disable-line no-unused-vars */
-  test();
   const {canvas, inputElement, mapConfig} = data;
+  config(mapConfig);
+  
   console.log(data);
   const renderer = new THREE.WebGLRenderer({canvas});
 

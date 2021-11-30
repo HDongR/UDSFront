@@ -1,4 +1,4 @@
-import { isNil } from '../core/util/common';
+import { isNil } from '../core/util/common.js';
 
 /**
  * Abstract parent class for Point and Coordinate
