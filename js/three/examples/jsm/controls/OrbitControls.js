@@ -265,7 +265,8 @@ class OrbitControls extends EventDispatcher {
 					panOffset.set( 0, 0, 0 );
 
 				}
-
+				let tempScale = scale;
+				_endEvent.scale = tempScale;
 				scale = 1;
 
 				// update condition is:
@@ -598,7 +599,6 @@ class OrbitControls extends EventDispatcher {
 				dollyOut( getZoomScale() );
 
 			}
-
 			scope.update();
 
 		}
@@ -1029,11 +1029,9 @@ class OrbitControls extends EventDispatcher {
 			if ( scope.enabled === false || scope.enableZoom === false || ( state !== STATE.NONE && state !== STATE.ROTATE ) ) return;
 
 			event.preventDefault();
-
 			scope.dispatchEvent( _startEvent );
 
 			handleMouseWheel( event );
-
 			scope.dispatchEvent( _endEvent );
 
 		}

@@ -1,48 +1,48 @@
 import * as THREE from '/js/three/build/three.module.js';
-import {OrbitControls} from '/js/three/examples/jsm/controls/OrbitControls.js';
-import {cvt3, calcMatrix} from '/js/util/geoutil.js';
+import { OrbitControls } from '/js/three/examples/jsm/controls/OrbitControls.js';
+import { cvt3, calcMatrix } from '/js/util/geoutil.js';
 
 let globalScene;
 let globalCamera;
 
-export function addScene(obj){
-  globalScene.add(obj);  
+export function addScene(obj) {
+  globalScene.add(obj);
 }
-function test(){ 
-    
+function test() {
+
   let val = 0.5;
   console.log(new Array(53).fill(0).map(() => (val *= 2)));
 }
 export function init(data) {   /* eslint-disable-line no-unused-vars */
   test();
-  const {canvas, inputElement, mapConfig} = data;
+  const { canvas, inputElement, mapConfig } = data;
   console.log(data);
-  const renderer = new THREE.WebGLRenderer({canvas});
+  const renderer = new THREE.WebGLRenderer({ canvas });
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color( 0xcccccc );
-  scene.fog = new THREE.FogExp2( 0xcccccc, 0.00002 );
+  scene.background = new THREE.Color(0xcccccc);
+  scene.fog = new THREE.FogExp2(0xcccccc, 0.00002);
   globalScene = scene;
 
-  const mesh = new THREE.Mesh( new THREE.PlaneGeometry( 2000, 2000 ), new THREE.MeshPhongMaterial( { color: 0x999999, depthWrite: false } ) );
+  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2000, 2000), new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false }));
   let centerPos = cvt3([mapConfig.center[0], mapConfig.center[1]], 0);
   centerPos = [centerPos.x, centerPos.y, centerPos.z];
   mesh.position.set(centerPos[0], 0, centerPos[1]);
   mesh.rotation.x = - Math.PI / 2;
-  scene.add( mesh );
+  scene.add(mesh);
 
 
 
-  const axesHelper = new THREE.AxesHelper( 50000 );
+  const axesHelper = new THREE.AxesHelper(50000);
   axesHelper.position.set(centerPos[0], 0, centerPos[1]);
-  scene.add( axesHelper );
-  
+  scene.add(axesHelper);
 
-  const grid = new THREE.GridHelper( 200, 40, 0x000000, 0x000000 );
+
+  const grid = new THREE.GridHelper(200, 40, 0x000000, 0x000000);
   grid.material.opacity = 0.2;
   grid.material.transparent = true;
-  scene.add( grid );
-   
+  scene.add(grid);
+
   grid.position.set(centerPos[0], 0, centerPos[1]);
 
 
@@ -53,18 +53,36 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
   const far = 500000;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   globalCamera = camera;
-  camera.position.set(centerPos[0], 2000, centerPos[1] + 100 );
+  camera.position.set(centerPos[0], 2000, centerPos[1] + 100);
 
-  const helper = new THREE.CameraHelper( camera );
-  scene.add( helper );
-  
+  const helper = new THREE.CameraHelper(camera);
+  scene.add(helper);
 
-  
+
+
 
 
 
   const controls = new OrbitControls(camera, inputElement);
   controls.target.set(centerPos[0], 2, centerPos[1]);
+  controls.addEventListener('change', (e) => {
+    //console.log('change', e.target);
+  });
+  controls.addEventListener('start', (e) => {
+    //console.log('start', e.target);
+  });
+  controls.addEventListener('end', (e) => {
+    if(e.scale > 1){
+      --camera.zoom;
+    }else{
+      ++camera.zoom;
+    }
+    console.log('end', e.scale, camera.zoom);
+  });
+
+  controls.zoomSpeed = 5.0;
+  controls.target.set(centerPos[0], 0, centerPos[1]);
+
   controls.update();
   controls.mouseButtons = {
     LEFT: THREE.MOUSE.PAN,
@@ -79,9 +97,9 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
   //controls.minDistance = 1;
   //controls.maxDistance = 500;
   controls.maxPolarAngle = Math.PI / 2;
-  
-   
-  
+
+
+
   //helper.position.set(centerPos[0], centerPos[1], 0);
   {
     const color = 0xFFFFFF;
@@ -145,7 +163,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     }
   }
 
-  const pickPosition = {x: -2, y: -2};
+  const pickPosition = { x: -2, y: -2 };
   const pickHelper = new PickHelper();
   clearPickPosition();
 
@@ -167,6 +185,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
       camera.aspect = inputElement.clientWidth / inputElement.clientHeight;
       camera.updateProjectionMatrix();
     }
+    //console.log(camera.zoom);
 
     cubes.forEach((cube, ndx) => {
       const speed = 1 + ndx * .1;
@@ -187,15 +206,15 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     //   0, 0, -350,1];
     //camera.projectionMatrixInverse.copy(renderer.matrix4).invert();
     //console.log(camera.aspect, camera.far, camera.fov, camera.matrix, camera.matrixWorld, camera.matrixWorldInverse, camera.near, camera.position, camera.projectionMatrix, camera.projectionMatrixInverse, camera.quaternion, camera.rotation);
-    
+
     // console.log('camera matrix m', camera.matrix);
     // console.log('camera projection m', camera.projectionMatrix);
     // console.log('camera projectionInverse m', camera.projectionMatrixInverse);
     // console.log('camera matrixWorld m', camera.matrixWorld);
     // console.log('camera matrixWorldInverse m', camera.matrixWorldInverse);
     //console.log(controls);
-    
-    calcMatrix();
+
+    //calcMatrix();
     requestAnimationFrame(render);
   }
 
@@ -209,7 +228,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     };
   }
 
-  const _euler = new THREE.Euler( 0, 0, 0, 'YXZ' );
+  const _euler = new THREE.Euler(0, 0, 0, 'YXZ');
   const _vector = new THREE.Vector3();
 
   const _changeEvent = { type: 'change' };
@@ -222,7 +241,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
 
   function setPickPosition(event) {
     const pos = getCanvasRelativePosition(event);
-    pickPosition.x = (pos.x / inputElement.clientWidth ) *  2 - 1;
+    pickPosition.x = (pos.x / inputElement.clientWidth) * 2 - 1;
     pickPosition.y = (pos.y / inputElement.clientHeight) * -2 + 1;  // note we flip Y
 
 
@@ -255,7 +274,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     // prevent the window from scrolling
     event.preventDefault();
     setPickPosition(event.touches[0]);
-  }, {passive: false});
+  }, { passive: false });
 
   inputElement.addEventListener('touchmove', (event) => {
     setPickPosition(event.touches[0]);
