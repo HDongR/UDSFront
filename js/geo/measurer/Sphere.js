@@ -1,6 +1,5 @@
-import { toRadian, toDegree, extend, wrap } from '../../core/util';
-import Coordinate from '../Coordinate';
-import Common from './Common';
+import { toRadian, toDegree, extend, wrap } from '../../core/util/index.js';
+import Coordinate from '../Coordinate.js';
 
 /**
  * A helper class with common measure methods for Sphere.
@@ -184,67 +183,6 @@ function calculateRhumbDestination(origin, distance, bearing, radius) {
 export const WGS84Sphere = extend(/** @lends measurer.WGS84Sphere */{
     'measure': 'EPSG:4326',
     sphere: new Sphere(6378137),
-    /**
-     * Measure the length between 2 coordinates.
-     * @param  {Coordinate} c1
-     * @param  {Coordinate} c2
-     * @return {Number}
-     */
-    measureLenBetween() {
-        return this.sphere.measureLenBetween.apply(this.sphere, arguments);
-    },
-    /**
-     * Measure the area closed by the given coordinates.
-     * @param  {Coordinate[]} coordinates
-     * @return {number}
-     */
-    measureArea() {
-        return this.sphere.measureArea.apply(this.sphere, arguments);
-    },
-
-    _locate() {
-        return this.sphere._locate.apply(this.sphere, arguments);
-    },
-
-    /**
-     * Locate a coordinate from the given source coordinate with a x-axis distance and a y-axis distance.
-     * @param  {Coordinate} c     - source coordinate
-     * @param  {Number} xDist              - x-axis distance
-     * @param  {Number} yDist              - y-axis distance
-     * @return {Coordinate}
-     */
-    locate() {
-        return this.sphere.locate.apply(this.sphere, arguments);
-    },
-
-    _rotate() {
-        return this.sphere._rotate.apply(this.sphere, arguments);
-    },
-
-    /**
-     * Rotate a coordinate of given angle around pivot
-     * @param {Coordinate} c  - source coordinate
-     * @param {Coordinate} pivot - pivot
-     * @param {Number} angle - angle in degree
-     * @return {Coordinate}
-     */
-    rotate() {
-        return this.sphere.rotate.apply(this.sphere, arguments);
-    }
-}, Common);
-
-/**
- * Baidu sphere measurer
- * @class
- * @category geo
- * @protected
- * @memberOf measurer
- * @name BaiduSphere
- * @mixes measurer.Common
- */
-export const BaiduSphere = extend(/** @lends measurer.BaiduSphere */{
-    'measure': 'BAIDU',
-    sphere: new Sphere(6370996.81),
     /**
      * Measure the length between 2 coordinates.
      * @param  {Coordinate} c1

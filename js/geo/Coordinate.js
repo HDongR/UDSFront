@@ -1,5 +1,5 @@
-import { isNumber, forEachCoord } from '../core/util';
-import Position from './Position';
+import { isNumber, forEachCoord } from '../core/util/index.js';
+import Position from './Position.js';
 /**
  * Represents a coordinate point <br>
  * e.g. <br>

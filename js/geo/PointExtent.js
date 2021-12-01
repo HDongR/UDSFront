@@ -1,5 +1,5 @@
-import Extent from './Extent';
-import Point from './Point';
+import Extent from './Extent.js';
+import Point from './Point.js';
 
 /**
  * Represent a bounding box on 2d surface , a rectangular area with minimum and maximum points. <br>

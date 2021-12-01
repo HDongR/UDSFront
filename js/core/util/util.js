@@ -1,7 +1,6 @@
-import { IS_NODE } from './env';
-import Browser from '../Browser';
-import { isString, isNil } from './common';
-import Point from '../../geo/Point';
+import { IS_NODE } from './env.js';
+import { isString, isNil } from './common.js';
+import Point from '../../geo/Point.js';
 
 // RequestAnimationFrame, inspired by Leaflet
 let requestAnimFrame, cancelAnimFrame;
@@ -307,9 +306,7 @@ const b64chrs = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+
 /* istanbul ignore next */
 /* eslint-disable no-sequences */
 export function btoa(input) {
-    if (Browser.btoa) {
-        return window.btoa(input);
-    }
+     
     const str = String(input);
     let output = '';
     for (

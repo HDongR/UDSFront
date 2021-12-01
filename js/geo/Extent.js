@@ -1,7 +1,7 @@
-import { isNil, isNumber } from '../core/util';
-import Coordinate from './Coordinate';
-import Point from './Point';
-import Size from './Size';
+import { isNil, isNumber } from '../core/util/index.js';
+import Coordinate from './Coordinate.js';
+import Point from './Point.js';
+import Size from './Size.js';
 
 //temparary variables
 const TEMP_POINT0 = new Point(0, 0);
