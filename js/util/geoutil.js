@@ -35,7 +35,8 @@ function project(coord){
 }
 
 function prjToPoint(coord){
-    var scale = 152.8740565703525;
+    //var scale = 152.8740565703525;
+    var scale = 76.43702828517624;
     var matrix = [1,-1,0,0];
     var x = matrix[0] * (coord.x - matrix[2]) / scale;
     var y = matrix[1] * (coord.y - matrix[3]) / scale;

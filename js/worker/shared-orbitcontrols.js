@@ -1,9 +1,14 @@
 import * as THREE from '/js/three/build/three.module.js';
-
-import {OrbitControls} from '/js/three/examples/jsm/controls/OrbitControls.js';
 import {cvt3, calcMatrix} from '/js/util/geoutil.js';
 import SpatialReference from '/js/map/spatial-reference/SpatialReference.js';
 import Projection from '/js/geo/projection/Projection.EPSG3857.js';
+import Maptalks from '/js/maptalks/map/Map.js';
+import '/js/maptalks/map/handler/Map.ScrollWheelZoom.js';
+import '/js/maptalks/map/handler/Map.Touch.js';
+ 
+import '/js/maptalks/map/Map.Pan.js'; 
+import '/js/maptalks/map/Map.Zoom.js';
+
 
 let globalScene;
 let globalCamera;
@@ -27,6 +32,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
 
   const {canvas, inputElement, mapConfig} = data;
   config(mapConfig);
+  let maptalks = new Maptalks(canvas, inputElement, mapConfig);
   
   console.log(data);
   const renderer = new THREE.WebGLRenderer({ canvas });
@@ -65,52 +71,124 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
   const far = 500000;
   const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
   globalCamera = camera;
-  camera.position.set(centerPos[0], 2000, centerPos[1] + 100);
+  camera.position.set(centerPos[0], 20, centerPos[1] + 100);
 
   const helper = new THREE.CameraHelper(camera);
   scene.add(helper);
 
+  camera.lookAt(centerPos[0], 0, centerPos[1]);
 
 
 
 
 
-  const controls = new OrbitControls(camera, inputElement);
-  controls.target.set(centerPos[0], 2, centerPos[1]);
-  controls.addEventListener('change', (e) => {
-    //console.log('change', e.target);
-  });
-  controls.addEventListener('start', (e) => {
-    //console.log('start', e.target);
-  });
-  controls.addEventListener('end', (e) => {
-    if(e.scale > 1){
-      --camera.zoom;
-    }else{
-      ++camera.zoom;
+  // const controls = new OrbitControls(camera, inputElement); 
+  // controls.addEventListener('change', (e) => {
+  //   //console.log('change', e.target);
+  // });
+  // controls.addEventListener('start', (e) => {
+  //   //console.log('start', e.target);
+  // });
+
+  function getResolution(zoom){
+    let _resolutions = map.spatialReference._resolutions;
+    let z = zoom | 0;
+
+    if (z < 0) {
+      z = 0;
+    } else if (z > _resolutions.length - 1) {
+      z = _resolutions.length - 1;
     }
-    console.log('end', e.scale, camera.zoom);
-  });
 
-  controls.zoomSpeed = 5.0;
-  controls.target.set(centerPos[0], 0, centerPos[1]);
+    let res = _resolutions[z];
 
-  controls.update();
-  controls.mouseButtons = {
-    LEFT: THREE.MOUSE.PAN,
-    MIDDLE: THREE.MOUSE.DOLLY,
-    RIGHT: THREE.MOUSE.ROTATE
+    if (z !== zoom && zoom > 0 && z < _resolutions.length - 1) {
+      let next = _resolutions[z + 1];
+      return res + (next - res) * (zoom - z);
+    }
+
+    return res;
   }
-  controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-  //controls.dampingFactor = 0.05;
-  controls.enablePan = true;
-  controls.screenSpacePanning = false;
-  controls.panSpeed = 1;
-  //controls.minDistance = 1;
-  //controls.maxDistance = 500;
-  controls.maxPolarAngle = Math.PI / 2;
 
+  function getZoomForScale(scale, zoom){
+    let res = getResolution(zoom);
+    let targetRes = res / scale;
+    let scaleZoom = getZoomFromRes(targetRes);
+    return scaleZoom;
+  }
 
+  function getZoomFromRes(res){
+    let resolutions = map.spatialReference._resolutions;
+    let minRes = getResolution(map.minZoom);
+    let maxRes = getResolution(map.maxZoom);
+
+    if (minRes <= maxRes) {
+      if (res <= minRes) {
+        return map.minZoom;
+      } else if (res >= maxRes) {
+        return map.maxZoom;
+      }
+    } else if (res >= minRes) {
+      return map.minZoom;
+    } else if (res <= maxRes) {
+      return map.maxZoom;
+    }
+
+    var l = resolutions.length;
+
+    for (var i = 0; i < l - 1; i++) {
+      if (!resolutions[i]) {
+        continue;
+      }
+
+      var gap = resolutions[i + 1] - resolutions[i];
+      var test = res - resolutions[i];
+
+      if (Math.sign(gap) === Math.sign(test) && Math.abs(gap) >= Math.abs(test)) {
+        return i + test / gap;
+      }
+    }
+
+    return l - 1;
+  }
+
+  // controls.addEventListener('end', (e) => {
+  //   let scale = e.scale;
+  //   if (scale > 0 && scale !== 0) {
+  //     scale = 1 / scale;
+  //   }
+  //   let zoom = camera.zoom;
+  //   let targetZoom = getZoomForScale(scale, zoom);
+  //   // if(e.scale > 1){
+  //   //   --camera.zoom;
+  //   // }else{
+  //   //   ++camera.zoom;
+  //   // }
+  //   camera.zoom = targetZoom;
+  //   console.log(e.scale, targetZoom, camera.position);
+  //   camera.position.y = 2.598379508192147;
+  //   //console.log('end', e.scale, camera.zoom);
+  // });
+
+  // controls.zoomSpeed = 5.0;
+  // controls.target.set(centerPos[0], 0, centerPos[1]);
+
+  // controls.update();
+  // controls.mouseButtons = {
+  //   LEFT: THREE.MOUSE.PAN,
+  //   MIDDLE: THREE.MOUSE.DOLLY,
+  //   RIGHT: THREE.MOUSE.ROTATE
+  // }
+  // controls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+  // //controls.dampingFactor = 0.05;
+  // controls.enablePan = true;
+  // controls.screenSpacePanning = false;
+  // controls.panSpeed = 1;
+  // controls.minDistance = 1.5;
+  // controls.maxDistance = 500;
+  // controls.maxPolarAngle = Math.PI / 2;
+  // controls.minZoom = map.minZoom; 
+  // controls.maxZoom = map.maxZoom;
 
   //helper.position.set(centerPos[0], centerPos[1], 0);
   {
@@ -155,7 +233,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     }
     pick(normalizedPosition, scene, camera, time) {
       // restore the color if there is a picked object
-      if (this.pickedObject) {
+      if (this.pickedObject && this.pickedObject.material.emissive) {
         this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
         this.pickedObject = undefined;
       }
@@ -168,9 +246,11 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
         // pick the first object. It's the closest one
         this.pickedObject = intersectedObjects[0].object;
         // save its color
-        this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
-        // set its emissive color to flashing red/yellow
-        this.pickedObject.material.emissive.setHex((time * 8) % 2 > 1 ? 0xFFFF00 : 0xFF0000);
+        if(this.pickedObject.material.emissive){
+          this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex() ;
+          // set its emissive color to flashing red/yellow
+          this.pickedObject.material.emissive.setHex((time * 8) % 2 > 1 ? 0xFFFF00 : 0xFF0000);
+        }
       }
     }
   }

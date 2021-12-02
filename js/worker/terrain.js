@@ -18,7 +18,8 @@ var loadTerrain = async function () {
     let endLon = preloadData.endpoint.split(',')[0];
     let endLat = preloadData.endpoint.split(',')[1];
 
-    let zResol = 152.8740565703525;
+    //let zResol = 152.8740565703525;
+    let zResol = 76.43702828517624;
     var coordMin = { x: Number(startLon), y: Number(startLat) };
     var coordMax = { x: Number(endLon), y: Number(endLat) };
     //var coordMin = new maptalks.Coordinate(129.148876, 35.151681);

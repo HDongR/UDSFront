@@ -4,6 +4,9 @@ var gisObj = {
   worker: null
 };
 
+// ev.clientX - domPos[0] - dom.clientLeft) / domPos[2],
+// (ev.clientY - domPos[1] - dom.clientTop)
+
 const mouseEventHandler = makeSendPropertiesHandler([
   'ctrlKey',
   'metaKey',
@@ -18,6 +21,10 @@ const mouseEventHandler = makeSendPropertiesHandler([
 const wheelEventHandlerImpl = makeSendPropertiesHandler([
   'deltaX',
   'deltaY',
+  'clientX',
+  'clientY',
+  'clientLeft',
+  'clientTop'
 ]);
 const keydownEventHandler = makeSendPropertiesHandler([
   'ctrlKey',
