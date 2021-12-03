@@ -8,6 +8,9 @@ import '/js/maptalks/map/handler/Map.Touch.js';
  
 import '/js/maptalks/map/Map.Pan.js'; 
 import '/js/maptalks/map/Map.Zoom.js';
+import '/js/maptalks/map/Map.Camera.js';
+
+import '/js/maptalks/renderer/map/MapCanvasRenderer.js';
 
 
 let globalScene;
@@ -89,6 +92,20 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
   // controls.addEventListener('start', (e) => {
   //   //console.log('start', e.target);
   // });
+  let matrix4 = new THREE.Matrix4();
+  function syncCamera(){
+    if(camera){
+      const map = maptalks.getMap();
+      camera.matrix.elements = map.cameraWorldMatrix;
+      camera.projectionMatrix.elements = map.projMatrix;
+      //https://github.com/mrdoob/three.js/commit/d52afdd2ceafd690ac9e20917d0c968ff2fa7661
+      //if (this.matrix4.invert) {
+          camera.projectionMatrixInverse.elements = matrix4.copy(camera.projectionMatrix).invert().elements;
+      //} else {
+      //   camera.projectionMatrixInverse.elements = this.matrix4.getInverse(camera.projectionMatrix).elements;
+      //}
+    }
+  }
 
   function getResolution(zoom){
     let _resolutions = map.spatialReference._resolutions;
@@ -306,7 +323,7 @@ export function init(data) {   /* eslint-disable-line no-unused-vars */
     // console.log('camera matrixWorldInverse m', camera.matrixWorldInverse);
     //console.log(controls);
 
-    //calcMatrix();
+    syncCamera();
     requestAnimationFrame(render);
   }
 

@@ -54,7 +54,7 @@ class MapScrollWheelZoomHandler extends Handler {
     }
 
     _seamless(evt, origin) {
-        let value = evt.deltaMode === window.WheelEvent.DOM_DELTA_LINE ? evt.deltaY * 60 : evt.deltaY;
+        let value = evt.deltaMode === 1 ? evt.deltaY * 60 : evt.deltaY;
         if (value % wheelZoomDelta !== 0) {
             //according to https://archive.fo/ZV8gz
             //value % wheelDelta === 0 means it must be  mouse on Mac OS X
@@ -91,8 +91,9 @@ class MapScrollWheelZoomHandler extends Handler {
         this._zooming = true;
         const map = this.target;
         if (!this._active) {
-            map.getRenderer().callInNextFrame(this._thisScrollZoom);
-            this._active = true;
+            //map.getRenderer().callInNextFrame(this._thisScrollZoom);
+            this._thisScrollZoom();
+           // this._active = true;
         }
     }
 
@@ -197,7 +198,7 @@ class MapScrollWheelZoomHandler extends Handler {
 
 Map.mergeOptions({
     'scrollWheelZoom': true,
-    'seamlessZoom': false
+    'seamlessZoom': true
 });
 
 Map.addOnLoadHook('addHandler', 'scrollWheelZoom', MapScrollWheelZoomHandler);

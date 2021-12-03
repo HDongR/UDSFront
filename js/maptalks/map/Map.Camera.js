@@ -1,10 +1,10 @@
-import Map from './Map';
-import Point from '../geo/Point';
-import Coordinate from '../geo/Coordinate';
-import * as mat4 from '../core/util/mat4';
-import { subtract, add, scale, normalize, dot, set, distance } from '../core/util/vec3';
-import { clamp, interpolate, wrap } from '../core/util';
-import { applyMatrix, matrixToQuaternion, quaternionToMatrix, lookAt, setPosition } from '../core/util/math';
+import Map from '/js/maptalks/map/Map.js';
+import Point from '/js/maptalks/geo/Point.js';
+import Coordinate from '/js/maptalks/geo/Coordinate.js';
+import * as mat4 from '/js/maptalks/core/util/mat4.js';
+import { subtract, add, scale, normalize, dot, set, distance } from '/js/maptalks/core/util/vec3.js';
+import { clamp, interpolate, wrap } from '/js/maptalks/core/util/index.js';
+import { applyMatrix, matrixToQuaternion, quaternionToMatrix, lookAt, setPosition } from '/js/maptalks/core/util/math.js';
 
 const RADIAN = Math.PI / 180;
 const DEFAULT_FOV = 0.6435011087932844;

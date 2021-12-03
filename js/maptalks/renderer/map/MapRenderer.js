@@ -1,6 +1,6 @@
-import { offsetDom } from '../../core/util/dom';
-import Class from '../../core/Class';
-import Point from '../../geo/Point';
+import { offsetDom } from '/js/maptalks/core/util/dom.js';
+import Class from '/js/maptalks/core/Class.js';
+import Point from '/js/maptalks/geo/Point.js';
 
 /**
  * @classdesc
@@ -89,11 +89,11 @@ class MapRenderer extends Class {
             return;
         }
         this.map._resetMapViewPoint();
-        if (this.map._panels.front) {
-            const pos = new Point(0, 0);
-            offsetDom(this.map._panels.back, pos);
-            offsetDom(this.map._panels.front, pos);
-        }
+        // if (this.map._panels.front) {
+        //     const pos = new Point(0, 0);
+        //     offsetDom(this.map._panels.back, pos);
+        //     offsetDom(this.map._panels.front, pos);
+        // }
     }
 
     onZoomEnd() {

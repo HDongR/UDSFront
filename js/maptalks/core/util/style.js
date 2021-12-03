@@ -1,6 +1,5 @@
-import { extend, isNil, isString, isObject, isNumber } from './common';
-import { hashCode } from './strings';
-import { isFunctionDefinition } from '@maptalks/function-type';
+import { extend, isNil, isString, isObject, isNumber } from '/js/maptalks/core/util/common.js';
+import { hashCode } from '/js/maptalks/core/util/strings.js';
 
 /**
  * Whether the color is a gradient
@@ -173,40 +172,8 @@ export function convertStylePath(styles, replacer) {
     }
 
 }
-const URL_PATTERN = /(\{\$root\}|\{\$iconset\})/g;
-export function parseSymbolPath(symbol, replacer) {
-    for (const p in symbol) {
-        if (symbol.hasOwnProperty(p) && p !== 'textName') {
-            if (isString(symbol[p]) && symbol[p].length > 2) {
-                symbol[p] = symbol[p].replace(URL_PATTERN, replacer);
-            } else if (isFunctionDefinition(symbol[p])) {
-                symbol[p] = parseStops(symbol[p], replacer);
-            } else if (isObject(symbol[p])) {
-                parseSymbolPath(symbol[p], replacer);
-            }
-        }
-    }
-}
 
-function parseStops(value, replacer) {
-    const defaultValue = value['default'];
-    if (isString(defaultValue)) {
-        value['default'] = defaultValue.replace(URL_PATTERN, replacer);
-    }
-    const stops = value.stops;
-    for (let i = 0; i < stops.length; i++) {
-        if (!Array.isArray(stops[i])) {
-            continue;
-        }
-        if (isString(stops[i][1])) {
-            stops[i][1] = stops[i][1].replace(URL_PATTERN, replacer);
-        } else if (isFunctionDefinition(stops[i][1])) {
-            stops[i][1] = parseStops(stops[i][1], replacer);
-        }
-    }
-    return value;
-}
-
+ 
 /**
  * geometry symbol has lineDasharray
  * @param {*} symbolizers

@@ -1,7 +1,7 @@
-import { DEFAULT_TEXT_SIZE } from '/js/core/Constants.js';
-import { isString, isNil, isNumber } from '/js/core/util/common.js';
-import Point from '/js/geo/Point.js';
-import Size from '/js/geo/Size.js';
+import { DEFAULT_TEXT_SIZE } from '/js/maptalks/core/Constants.js';
+import { isString, isNil, isNumber } from '/js/maptalks/core/util/common.js';
+import Point from '/js/maptalks/geo/Point.js';
+import Size from '/js/maptalks/geo/Size.js';
 
 /**
  * @classdesc

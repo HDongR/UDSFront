@@ -1,9 +1,8 @@
-import { now, isNil, isArrayHasData, isSVG, IS_NODE, loadImage, hasOwn } from '../../core/util';
-import Class from '../../core/Class';
-import Browser from '../../core/Browser';
-import Promise from '../../core/Promise';
-import Canvas2D from '../../core/Canvas';
-import Point from '../../geo/Point';
+import { now, isNil, isArrayHasData, isSVG, loadImage, hasOwn } from '/js/maptalks/core/util/index.js';
+import Class from '/js/maptalks/core/Class.js';
+import Promise from '/js/maptalks/core/Promise.js';
+import Canvas2D from '/js/maptalks/core/Canvas.js';
+import Point from '/js/maptalks/geo/Point.js';
 
 /**
  * @classdesc
@@ -782,7 +781,7 @@ class CanvasRenderer extends Class {
             return;
         }
         let w = url[1], h = url[2];
-        if (this.layer.options['cacheSvgOnCanvas'] && isSVG(url[0]) === 1 && (Browser.edge || Browser.ie)) {
+        if (this.layer.options['cacheSvgOnCanvas'] && isSVG(url[0]) === 1 /*&& (Browser.edge || Browser.ie)*/) {
             //opacity of svg img painted on canvas is always 1, so we paint svg on a canvas at first.
             if (isNil(w)) {
                 w = img.width || this.layer.options['defaultIconSize'][0];
@@ -813,7 +812,7 @@ export class ResourceCache {
             height: +url[2],
             refCnt: 0
         };
-        if (img && Browser.imageBitMap) {
+        if (img /*&& Browser.imageBitMap*/) {
             if (img.src && isSVG(img.src)) {
                 return;
             }

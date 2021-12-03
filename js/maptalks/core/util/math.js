@@ -1,4 +1,4 @@
-import { subtract, length, normalize, cross } from './vec3';
+import { subtract, length, normalize, cross } from '/js/maptalks/core/util/vec3.js';
 //contains code from THREE.js
 
 export function applyMatrix(out, v, e) {

@@ -85,7 +85,7 @@ Map.include(/** @lends Map.prototype */{
             scale = fromRes / res / startScale,
             startPoint = this._prjToContainerPoint(this._startZoomCoord, this._startZoomVal);
         const offset = this.getViewPoint();
-        if (!this.isRotating() && !startPoint.equals(origin) && scale !== 1) {
+        // if (!this.isRotating() && !startPoint.equals(origin) && scale !== 1) {
             const pitch = this.getPitch();
             // coordinate at origin changed, usually by map.setCenter
             // add origin offset
@@ -95,7 +95,7 @@ Map.include(/** @lends Map.prototype */{
                 originOffset.y /= Math.cos(pitch * Math.PI / 180);
             }
             origin = origin.add(originOffset);
-        }
+        //}
         const matrix = {
             'view' : [scale, 0, 0, scale, (origin.x - offset.x) *  (1 - scale), (origin.y - offset.y) *  (1 - scale)]
         };
@@ -122,7 +122,7 @@ Map.include(/** @lends Map.prototype */{
         const startZoomVal = this._startZoomVal;
         this._zoomTo(nextZoom, origin);
         this._zooming = false;
-        this._getRenderer().onZoomEnd();
+        //this._getRenderer().onZoomEnd();
 
         /**
           * zoomend event

@@ -1,10 +1,9 @@
-import { IS_NODE, isNumber, isFunction, requestAnimFrame, cancelAnimFrame, equalMapView } from '../../core/util';
-import { createEl, preventSelection, computeDomPosition, addDomEvent, removeDomEvent } from '../../core/util/dom';
-import Browser from '../../core/Browser';
-import Point from '../../geo/Point';
-import Canvas2D from '../../core/Canvas';
-import MapRenderer from './MapRenderer';
-import Map from '../../map/Map';
+import { isNumber, isFunction, requestAnimFrame, cancelAnimFrame, equalMapView } from '/js/maptalks/core/util/index.js';
+import { preventSelection, computeDomPosition, addDomEvent, removeDomEvent } from '/js/maptalks/core/util/dom.js';
+import Point from '/js/maptalks/geo/Point.js';
+import Canvas2D from '/js/maptalks/core/Canvas.js';
+import MapRenderer from '/js/maptalks/renderer/map/MapRenderer.js';
+import Map from '/js/maptalks/map/Map.js';
 
 /**
  * @classdesc
@@ -396,9 +395,9 @@ class MapCanvasRenderer extends MapRenderer {
         }
         const width = size['width'] + 'px',
             height = size['height'] + 'px';
-        const panels = this.map._panels;
-        panels.mapWrapper.style.width = width;
-        panels.mapWrapper.style.height = height;
+        // const panels = this.map._panels;
+        // panels.mapWrapper.style.width = width;
+        // panels.mapWrapper.style.height = height;
         this._updateCanvasSize();
     }
 
@@ -423,8 +422,8 @@ class MapCanvasRenderer extends MapRenderer {
     }
 
     remove() {
-        if (Browser.webgl && typeof document !== 'undefined') {
-            removeDomEvent(document, 'visibilitychange', this._thisVisibilitychange, this);
+        if (true) {
+            removeDomEvent(this.document, 'visibilitychange', this._thisVisibilitychange, this);
         }
         if (this._resizeInterval) {
             clearInterval(this._resizeInterval);
@@ -488,61 +487,16 @@ class MapCanvasRenderer extends MapRenderer {
      * initialize container DOM of panels
      */
     initContainer() {
-        const panels = this.map._panels;
-
-        function createContainer(name, className, cssText, enableSelect) {
-            const c = createEl('div', className);
-            if (cssText) {
-                c.style.cssText = cssText;
-            }
-            panels[name] = c;
-            if (!enableSelect) {
-                preventSelection(c);
-            }
-            return c;
-        }
+        
         const containerDOM = this.map._containerDOM;
 
         if (this._containerIsCanvas) {
             //container is a <canvas> element.
             return;
         }
+        this.canvas = this.map.canvas;
+        //this.context = this.canvas.getContext('2d');
 
-        containerDOM.innerHTML = '';
-
-        const POSITION0 = 'position:absolute;top:0px;left:0px;';
-
-        const mapWrapper = createContainer('mapWrapper', 'maptalks-wrapper', 'position:absolute;overflow:hidden;', true),
-            mapAllLayers = createContainer('allLayers', 'maptalks-all-layers', POSITION0 + 'padding:0px;margin:0px;z-index:0;overflow:visible;', true),
-            backStatic = createContainer('backStatic', 'maptalks-back-static', POSITION0 + 'z-index:0;', true),
-            back = createContainer('back', 'maptalks-back', POSITION0 + 'z-index:1;'),
-            backLayer = createContainer('backLayer', 'maptalks-back-layer', POSITION0),
-            canvasContainer = createContainer('canvasContainer', 'maptalks-canvas-layer', POSITION0 + 'border:none;z-index:2;'),
-            frontStatic = createContainer('frontStatic', 'maptalks-front-static', POSITION0 + 'z-index:3;', true),
-            front = createContainer('front', 'maptalks-front', POSITION0 + 'z-index:4;', true),
-            frontLayer = createContainer('frontLayer', 'maptalks-front-layer', POSITION0 + 'z-index:0;'),
-            // children's zIndex in frontLayer will be set by map.addLayer, ui container's z-index is set to 10000 to make sure it's always on the top.
-            ui = createContainer('ui', 'maptalks-ui', POSITION0 + 'border:none;z-index:1;', true),
-            control = createContainer('control', 'maptalks-control', 'z-index:1', true);
-
-        containerDOM.appendChild(mapWrapper);
-
-        mapAllLayers.appendChild(backStatic);
-        back.appendChild(backLayer);
-        back.layerDOM = backLayer;
-        mapAllLayers.appendChild(back);
-        mapAllLayers.appendChild(canvasContainer);
-        front.appendChild(frontLayer);
-        front.layerDOM = frontLayer;
-        front.uiDOM = ui;
-        mapAllLayers.appendChild(frontStatic);
-        mapAllLayers.appendChild(front);
-        front.appendChild(ui);
-
-        mapWrapper.appendChild(mapAllLayers);
-        mapWrapper.appendChild(control);
-
-        this.createCanvas();
 
         this.resetContainer();
         const mapSize = this.map._getContainerDomSize();
@@ -774,27 +728,14 @@ class MapCanvasRenderer extends MapRenderer {
 
         canvas.height = r * mapSize['height'];
         canvas.width = r * mapSize['width'];
-        this.topLayer.width = canvas.width;
-        this.topLayer.height = canvas.height;
-        if (canvas.style) {
-            canvas.style.width = mapSize['width'] + 'px';
-            canvas.style.height = mapSize['height'] + 'px';
-        }
+        // this.topLayer.width = canvas.width;
+        // this.topLayer.height = canvas.height;
+        // if (canvas.style) {
+        //     canvas.style.width = mapSize['width'] + 'px';
+        //     canvas.style.height = mapSize['height'] + 'px';
+        // }
 
         return true;
-    }
-
-    createCanvas() {
-        this.topLayer = createEl('canvas');
-        this.topCtx = this.topLayer.getContext('2d');
-        if (this._containerIsCanvas) {
-            this.canvas = this.map._containerDOM;
-        } else {
-            this.canvas = createEl('canvas');
-            this._updateCanvasSize();
-            this.map._panels.canvasContainer.appendChild(this.canvas);
-        }
-        this.context = this.canvas.getContext('2d');
     }
 
     _updateDomPosition(framestamp) {
@@ -820,7 +761,7 @@ class MapCanvasRenderer extends MapRenderer {
     _setCheckSizeInterval(interval) {
         // ResizeObserver priority of use
         // https://developer.mozilla.org/zh-CN/docs/Web/API/ResizeObserver
-        if (Browser.resizeObserver) {
+        if (false) {
             if (this._resizeObserver) {
                 this._resizeObserver.disconnect();
             }
@@ -855,10 +796,10 @@ class MapCanvasRenderer extends MapRenderer {
     _registerEvents() {
         const map = this.map;
 
-        if (map.options['checkSize'] && !IS_NODE && (typeof window !== 'undefined')) {
+        if (map.options['checkSize']) {
             this._setCheckSizeInterval(map.options['checkSizeInterval']);
         }
-        if (!Browser.mobile) {
+        if (!false) {
             map.on('_mousemove', this._onMapMouseMove, this);
         }
 
@@ -882,8 +823,8 @@ class MapCanvasRenderer extends MapRenderer {
             this._spatialRefChanged = true;
         });
 
-        if (Browser.webgl && typeof document !== 'undefined') {
-            addDomEvent(document, 'visibilitychange', this._thisVisibilitychange, this);
+        if (true) {
+            addDomEvent(this.document, 'visibilitychange', this._thisVisibilitychange, this);
         }
     }
 
@@ -905,7 +846,7 @@ class MapCanvasRenderer extends MapRenderer {
     }
 
     _onVisibilitychange() {
-        if (document.visibilityState !== 'visible') {
+        if (this.document.visibilityState !== 'visible') {
             return;
         }
         this.setToRedraw();
